@@ -214,6 +214,13 @@ conda env remove -n final_ai
 
 ---
 
+## 8. 참고문헌(Reference)
+
+- [국내](https://www.myfitnesspal.com/ko)
+- [해외 - 운동 및 커뮤니티](https://www.freeletics.com/en/)
+- [해외 - 식단 및 관리](https://fitbod.me/)
+- [해외 - 운동](https://sworkit.com/)
+
 ## Acknowledgments
 
 프로젝트 기간동안 수고 많으셨습니다 ^^
