@@ -1,6 +1,6 @@
 # Git 사용법
 
-## 1. 초기 세팅
+## 1. 초기 세팅(최초 GIT 설치시)
 
 ```bash
 # 1️⃣ 사용자 정보 설정
@@ -40,7 +40,7 @@ git commit -m "메시지명"
 git push
 ```
 
-[참고 - git commit 메세지 작성법](https://github.com/qkdrk7777775/human_final_251112/blob/main/docs/guide/GIT.md)
+[참고 - git commit 메세지 작성법](/docs/guide/GIT.md)
 
 <details>
 <summary> 참고- 다중 브랜치 기반 작업 방식 </summary>
