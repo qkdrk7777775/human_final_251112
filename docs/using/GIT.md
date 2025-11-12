@@ -40,7 +40,7 @@ git commit -m "메시지명"
 git push
 ```
 
-[참고 - git commit 메세지 작성법](docs/guide/git.md)
+[참고 - git commit 메세지 작성법](https://github.com/qkdrk7777775/human_final_251112/tree/main/docs/guide/git.md)
 
 <details>
 <summary> 참고- 다중 브랜치 기반 작업 방식 </summary>
