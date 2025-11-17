@@ -169,7 +169,7 @@ conda env remove -n final_ai
 
    ```bash
    # docker-desktop 실행 후 DB 실행
-   docker-compose up -f docker-compose-db.yml -d
+   docker-compose -f environment/docker-compose-db.yml up -d
    ```
 
 ---
