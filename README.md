@@ -244,6 +244,7 @@ conda env remove -n final_ai
 - [해외 - 운동](https://sworkit.com/)
 - [국민체력100 인증단계](https://nfa.kspo.or.kr/intro/step.kspo)
 - [국민체력100 동영상 정보 API](https://www.data.go.kr/data/15108846/openapi.do)
+- [쿠팡 API](https://developers.coupangcorp.com/hc/ko)
 
 ## Acknowledgments
 
