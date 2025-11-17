@@ -1,4 +1,3 @@
-import os
 from dotenv import load_dotenv
 
 load_dotenv()  
@@ -10,8 +9,9 @@ config = {
         "USER_ID":"",
         "PASSWORD":"",
         "HOST":"localhost:3307"
-    }
+    },
 }
+
 cors_config = {
     "allow_origins":[
         f"http://localhost:{config['FRONT_PORT']}"
@@ -21,3 +21,5 @@ cors_config = {
     "allow_methods":["*"],
     "allow_headers":["*"],
 }
+
+config.update({"CORS":cors_config})
