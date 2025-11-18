@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `comment` (
   	`id` INT NOT NULL AUTO_INCREMENT,
     `post_id` INT NOT NULL COMMENT '댓글이 달린 게시글 참조',
     `comment_user_id` INT NOT NULL COMMENT '댓글 작성자(user) 참조',
-    `comment` TEXT NULL,
+    `comment` TEXT NOT NULL,
     PRIMARY KEY (`id`),
 	--     게시글 삭제 시 댓글 삭제
     CONSTRAINT `FK_comment_post` FOREIGN KEY (`post_id`) REFERENCES `post`(`id`) ON DELETE CASCADE,
@@ -84,7 +84,6 @@ CREATE TABLE IF NOT EXISTS `comment` (
 
 -- 좋아요/싫어요
 CREATE TABLE IF NOT EXISTS `post_reactions` (
-    `id` INT NOT NULL AUTO_INCREMENT,
     `post_id` INT NOT NULL COMMENT '게시글 참조',
     `user_id` INT NOT NULL COMMENT '반응한 유저 참조',
     `reaction_type` ENUM('like','dislike') NOT NULL,
@@ -110,45 +109,58 @@ CREATE TABLE IF NOT EXISTS `reported_posts` (
 CREATE TABLE IF NOT EXISTS `ROM_history` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `user_id` INT NOT NULL COMMENT '측정한 유저 참조',
-    `measured_at` DATE NOT NULL DEFAULT CURRENT_DATE COMMENT '측정일',
+    `measured_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT '측정일시',
     PRIMARY KEY (`id`),
-    CONSTRAINT `FK_ROM_history_user` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`)
-        -- ON DELETE CASCADE 옵션 추가하면 유저 삭제 시 기록도 삭제 가능
+    CONSTRAINT `FK_ROM_history_user` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE
 );
+
 -- 기본 운동 정보
 CREATE TABLE IF NOT EXISTS `base_exercises` (
-    `id` INT NOT NULL,
-    `name` VARCHAR(100) NULL,
-    `type` VARCHAR(50) NULL,
-    PRIMARY KEY (`id`)
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(100) NOT NULL COMMENT '운동 이름',
+    `type` VARCHAR(50) NOT NULL COMMENT '운동 종류 (예: 상체, 하체, 코어 등)',
+    PRIMARY KEY (`id`),
+    UNIQUE (`name`)
 );
 
+-- 기본 운동 정보 결합
 CREATE TABLE IF NOT EXISTS `curriculum` (
-    `exercise_id` INT NOT NULL,
-    `curriculum_id` INT NULL,
-    `sets` INT NULL,
-    `times` INT NULL,
-    PRIMARY KEY (`exercise_id`)
+    `exercise_id` INT NOT NULL COMMENT 'base_exercises.id 참조',
+    `curriculum_id` INT NOT NULL COMMENT '커리큘럼 그룹 또는 루틴 ID',
+    `sets` INT NULL COMMENT '세트 수',
+    `times` INT NULL COMMENT '시간',
+    PRIMARY KEY (`exercise_id`, `curriculum_id`),
+    CONSTRAINT `FK_curriculum_exercise`
+        FOREIGN KEY (`exercise_id`) REFERENCES `base_exercises`(`id`) 
+        ON DELETE CASCADE
 );
 
+-- 기본 식단
 CREATE TABLE IF NOT EXISTS `base_meals` (
-    `id` INT NOT NULL,
-    `name` VARCHAR(255) NULL,
-    `calories` INT NULL,
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
+    `calories` INT NOT NULL COMMENT '1회 제공량 기준 kcal',
     PRIMARY KEY (`id`)
 );
 
+-- 출석 테이블
 CREATE TABLE IF NOT EXISTS `attendance` (
-    `id` INT NULL COMMENT 'auto increment 적용',
-    `Field` DATE NULL,
-    PRIMARY KEY (`id`)
+    `user_id` INT NOT NULL COMMENT '출석한 유저 참조',
+    `attended_at` DATE NOT NULL DEFAULT (CURRENT_DATE),
+    PRIMARY KEY (user_id, attended_at),
+    CONSTRAINT `FK_attendance_user` 
+        FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) 
+        ON DELETE CASCADE
 );
 
-
+-- 문의 테이블
 CREATE TABLE IF NOT EXISTS `qna` (
-    `id` INT NOT NULL,
-    `user_id` INT NULL COMMENT 'auto increment 적용',
-    `title` VARCHAR(255) NULL,
-    `contants` TEXT NULL,
-    PRIMARY KEY (`id`, `user_id`)
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `user_id` INT NOT NULL COMMENT '질문 작성자',
+    `title` VARCHAR(255) NOT NULL,
+    `contents` TEXT NOT NULL,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `FK_qna_user` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`)
 );
