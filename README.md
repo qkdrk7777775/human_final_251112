@@ -174,10 +174,11 @@ conda env remove -n final_ai
    # DB 연결 후 Final.sql 실행(Alt + x)
    ```
 
-<video width="480" controls>
-<source src="docs/guide/DB테이블구축.mp4" type="video/mp4">
-브라우저가 video 태그를 지원하지 않습니다.
-</video>
+   [영상 링크](docs/guide/DB테이블구축.mp4)
+   <video width="480" controls>
+   <source src="docs/guide/DB테이블구축.mp4" type="video/mp4">
+   브라우저가 video 태그를 지원하지 않습니다.
+   </video>
 
 ---
 

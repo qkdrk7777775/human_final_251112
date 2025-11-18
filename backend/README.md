@@ -72,7 +72,10 @@ python backend/main.py
 
 ## (5) VScode 실행
 
+[영상링크](docs/guide/python가상환경선택.mp4)
+
 <video width="480" controls>
+
   <source src="docs/guide/python가상환경선택.mp4" type="video/mp4">
   브라우저가 video 태그를 지원하지 않습니다.
 </video>
