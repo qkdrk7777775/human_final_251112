@@ -18,7 +18,6 @@ async def create_post(body: dict = Body(...)):
 async def read_posts():
     try:
         posts = community.get_posts()
-        print(posts)
         return JSONResponse(
             {
                 "message":"게시글 조회 성공",
@@ -80,7 +79,6 @@ async def update_post(
 async def delete_post(post_id: int = Path(...)):
     try:
         deleted = community.delete_post(post_id)
-        print(deleted)
         if not deleted:
             return JSONResponse(
                 {"message": "게시글 없음"}, 
