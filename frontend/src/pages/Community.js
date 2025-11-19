@@ -7,7 +7,10 @@ import { getPosts } from "../api/Community";
 
 const Community = () => {
   const [posts, setPosts] = useState();
+  const [selectedData, setSelectedData] = useState(null); // 선택된 행 상태
+  console.log(selectedData);
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -20,6 +23,11 @@ const Community = () => {
     };
     fetchPost();
   }, []);
+  useEffect(() => {
+    if (selectedData?.id) {
+      navigate(`/community/read/${selectedData.id}`);
+    }
+  }, [selectedData, navigate]);
 
   const handleWritePost = () => {
     // 현재는 alert로 테스트
@@ -31,7 +39,11 @@ const Community = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <DynamicTable data={posts} rowsPerPage={10} />
+      <DynamicTable
+        data={posts}
+        setSelectedData={setSelectedData}
+        rowsPerPage={10}
+      />
       <button
         onClick={handleWritePost}
         style={{
