@@ -1,6 +1,6 @@
 .login-page {
   max-width: 420px; /* 카드 너비 */
-  margin: 40px auto 80px; /* 위·아래 여백 + 가운데 정렬 */
+  margin: 100px auto 80px; /* 위·아래 여백 + 가운데 정렬 */
   padding: 32px 28px;
   border: 1px solid #e2e2e2;
   border-radius: 10px;

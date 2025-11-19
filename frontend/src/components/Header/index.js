@@ -18,7 +18,7 @@ const Header = ({ userInfo, onLogout }) => {
   };
 
   return (
-    <header className="main-header">
+    <header>
       <div className="header-left">
         <button className="logo" onClick={goHome}>
           HomeFit
