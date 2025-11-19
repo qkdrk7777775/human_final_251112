@@ -1,5 +1,5 @@
 
-from models import post
+from models import post,reported_post
 
 # 게시글 생성
 def create_post(title: str, contents: str, user_id: int):
@@ -25,3 +25,16 @@ def update_post(post_id: int, title: str, contents: str):
 def delete_post(post_id: int):
     deleted = post.delete_post_by_id(post_id)
     return deleted
+
+
+
+# 게시글 신고
+def create_reported_post(post_id: str, user_id: str, comments: int):
+    post_id = reported_post.insert_reported_post(post_id, user_id, comments)
+    return post_id
+
+# 신고 게시글 조회
+def get_reported_posts():
+    post_data = reported_post.get_reported_posts()
+    return post_data
+

@@ -30,6 +30,18 @@ function App() {
     const savedUser = localStorage.getItem("userInfo");
     if (savedUser) {
       setUserInfo(JSON.parse(savedUser));
+    } else {
+      /* 로그인 구현 시 */
+      // setUserInfo(null);
+
+      /* 로그인 미구현 시 샘플 */
+      const sampleUser = {
+        id: 1,
+        username: "testuser",
+        email: "testuser@example.com",
+      };
+      setUserInfo(sampleUser);
+      localStorage.setItem("userInfo", JSON.stringify(sampleUser));
     }
   }, []);
 

@@ -35,7 +35,6 @@ export async function getPostDetail(postId) {
 }
 
 export async function updatePost(postId, { title, contents }) {
-  console.log(contents);
   try {
     const res = await apiWithCookie.put(`/posts/${postId}`, {
       title,
@@ -53,6 +52,29 @@ export async function deletePost(postId) {
     return res.data;
   } catch (err) {
     console.error("게시글 삭제 실패:", err);
+    throw err;
+  }
+}
+
+export async function createPostReport(post_id, comment_user_id, comment) {
+  try {
+    const res = await apiWithCookie.post(`/posts/report/${post_id}`, {
+      comment_user_id,
+      comment,
+    });
+    return res.data;
+  } catch (err) {
+    console.error("게시글 신고 실패:", err);
+    throw err;
+  }
+}
+
+export async function getPostReport() {
+  try {
+    const res = await apiWithCookie.get("/posts/report");
+    return res.data;
+  } catch (err) {
+    console.error("게시글 목록 불러오기 실패:", err);
     throw err;
   }
 }

@@ -23,12 +23,13 @@ def fetch_all_posts():
 
 # 게시글 상세 조회
 def fetch_post_by_id(post_id: int):
-    query = text("SELECT * FROM post WHERE id=:post_id")
+    query = text("SELECT p.*, u.email FROM post as p JOIN user as u ON p.user_id = u.id WHERE p.id=:post_id")
     with engine.connect() as conn:
         df = pd.read_sql(query, conn, params={"post_id": post_id})
     # datetime → 문자열 변환
     df["create_at"] = df["create_at"].astype(str) 
     df["updated_at"] = df["updated_at"].astype(str)  
+    print(df)
     return df.to_dict(orient="records")
 
 # 게시글 수정
