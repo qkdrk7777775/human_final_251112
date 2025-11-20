@@ -1,5 +1,6 @@
 import { api, apiWithCookie } from "./axios";
 
+// 게시글 생성
 export async function createPost(title, contents, authorId) {
   try {
     const res = await apiWithCookie.post("/posts", {
@@ -14,6 +15,7 @@ export async function createPost(title, contents, authorId) {
   }
 }
 
+// 게시글 목록 조회
 export async function getPosts() {
   try {
     const res = await api.get("/posts");
@@ -44,6 +46,7 @@ export async function getPostDetail(postId) {
   }
 }
 
+// 게시글 수정
 export async function updatePost(postId, { title, contents }) {
   try {
     const res = await apiWithCookie.put(`/posts/${postId}`, {
@@ -57,6 +60,7 @@ export async function updatePost(postId, { title, contents }) {
   }
 }
 
+// 게시글 삭제
 export async function deletePost(postId) {
   try {
     const res = await apiWithCookie.delete(`/posts/${postId}`);
@@ -67,6 +71,7 @@ export async function deletePost(postId) {
   }
 }
 
+// 게시글 신고
 export async function createPostReport(post_id, comment_user_id, comment) {
   try {
     const res = await apiWithCookie.post(`/posts/report/${post_id}`, {
@@ -80,6 +85,7 @@ export async function createPostReport(post_id, comment_user_id, comment) {
   }
 }
 
+// 신고 게시글 목록 조회
 export async function getPostReport() {
   try {
     const res = await apiWithCookie.get("/posts/report");

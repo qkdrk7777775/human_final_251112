@@ -165,7 +165,7 @@ async def read_reported_posts():
             {"message": "게시글 조회 실패", "error":str(e)}, 
             status_code=status.HTTP_404_NOT_FOUND
             )
-
+        
 
 # 게시글 복구
 async def delete_reported_post(
@@ -182,3 +182,19 @@ async def delete_reported_post(
     except Exception as e:
         return JSONResponse({"message": "게시글 복구 실패", "error":str(e)}, status_code=status.HTTP_400_BAD_REQUEST)
 
+# 유저별 게시글 조회
+async def read_user_posts(user_id: int = Path(...)):
+    try:
+        posts = community.get_posts_by_user_id(user_id)
+        return JSONResponse(
+            {
+                "message": "유저 게시글 조회 성공",
+                "data": posts
+            },
+            status_code=status.HTTP_200_OK
+        )
+    except Exception as e:
+        return JSONResponse(
+            {"message": "유저 게시글 조회 실패", "error": str(e)},
+            status_code=status.HTTP_400_BAD_REQUEST
+        )

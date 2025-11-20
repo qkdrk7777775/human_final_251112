@@ -15,3 +15,4 @@ dependencies:
       - pymysql
       - python-dotenv
       - pandas
+      - passlib
