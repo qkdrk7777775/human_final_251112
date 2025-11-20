@@ -1,8 +1,8 @@
-// src/pages/Login.js
 import { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import URL from "../constants/url";
-// import { loginRequest } from "../api/Auth";// 나중에 백엔드 연결할 때 사용할 예정
+import URL from "../../constants/url";
+import LoginForm from "./LoginForm";
+// import { loginRequest } from "../api/Auth"; 백엔드 연결할 때 주석 풀 예정
 
 const Login = ({ setUserInfo }) => {
   const navigate = useNavigate();
@@ -46,9 +46,7 @@ const Login = ({ setUserInfo }) => {
     const redirectPath = location.state?.from || URL.HOME;
     navigate(redirectPath, { replace: true });
 
-    // ==========================================
     // ② 백엔드 로그인 API 연결 후에는 아래처럼 변경
-    // ==========================================
     /*
         try {
             // 서버에 로그인 요청 (이메일, 비밀번호 전달)
@@ -71,37 +69,7 @@ const Login = ({ setUserInfo }) => {
     <div className="login-page">
       <h2 className="login-title">로그인</h2>
 
-      <form className="login-form" onSubmit={handleLogin}>
-        <div className="form-row">
-          <label className="form-label">이메일</label>
-          <input
-            name="email"
-            type="email"
-            placeholder="이메일"
-            value={form.email}
-            onChange={handleChange}
-            required
-            className="form-input"
-          />
-        </div>
-
-        <div className="form-row">
-          <label className="form-label">비밀번호</label>
-          <input
-            name="password"
-            type="password"
-            placeholder="비밀번호"
-            value={form.password}
-            onChange={handleChange}
-            required
-            className="form-input"
-          />
-        </div>
-
-        <button type="submit" className="btn-primary login-button">
-          로그인
-        </button>
-      </form>
+      <LoginForm form={form} onchange={handleChange} onSubmit={handleLogin} />
 
       <div className="login-links">
         <p>
