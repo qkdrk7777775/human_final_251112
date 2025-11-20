@@ -24,6 +24,16 @@ export async function getPosts() {
   }
 }
 
+export async function getPostsByUserId(user_id) {
+  try {
+    const res = await api.get(`/posts/user/${user_id}`);
+    return res.data;
+  } catch (err) {
+    console.error("특정 유저 게시글 목록 불러오기 실패:", err);
+    throw err;
+  }
+}
+
 export async function getPostDetail(postId) {
   try {
     const res = await api.get(`/posts/${postId}`);
