@@ -20,17 +20,24 @@ def get_reported_posts():
     df["reported_at"] = df["reported_at"].astype(str) 
     return df.to_dict(orient="records")
     
+def get_reported_posts_by_id(post_id:int, user_id:str):
+    query = text("SELECT 1 FROM reported_posts WHERE post_id = :post_id AND user_id = :user_id")
+    with engine.connect() as conn:
+        result = conn.execute(query, {"post_id": post_id, "user_id": user_id})
+        row = result.fetchone()
+    return row is not None
+    
 
 # def update_reported_post(report_id: int, reason: str):
 #     query = text("UPDATE reported_posts SET reason = WHERE id = ")
 #     with engine.connect() as conn:
 #         result = conn.execute(query, {"reason": reason, "report_id": report_id})
-#     conn.commit()
+#         conn.commit()
 #     return result.rowcount
 
 # def delete_reported_post(report_id: int):
 #     query = text("DELETE FROM reported_posts WHERE id = ")
 #     with engine.connect() as conn:
 #         result = conn.execute(query, {"report_id": report_id})
-#     conn.commit()
+#         conn.commit()
 #     return result.rowcount

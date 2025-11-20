@@ -30,6 +30,10 @@ def delete_post(post_id: int):
 
 # 게시글 신고
 def create_reported_post(post_id: str, user_id: str, comments: int):
+    is_exists = reported_post.get_reported_posts_by_id(post_id, user_id)
+    print(is_exists)
+    if is_exists:
+        return None
     post_id = reported_post.insert_reported_post(post_id, user_id, comments)
     return post_id
 
