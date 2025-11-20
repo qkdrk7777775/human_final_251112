@@ -44,78 +44,66 @@
 }
 
 /* postlist */
-
-.postlist-container {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 0 20px;
-}
-
-.postlist-title {
-  text-align: center;
-  margin-bottom: 25px;
-  font-size: 26px;
-  font-weight: bold;
-}
-
 .postlist-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  table-layout: fixed; /* 열 너비 균등 분배 */
 }
 
 .postlist-table th,
 .postlist-table td {
-  padding: 12px 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  vertical-align: middle; /* 가운데 정렬 */
   text-align: center;
-  border-bottom: 1px solid #eee;
+  word-break: break-word; /* 긴 글자 줄바꿈 */
 }
 
-.postlist-table th {
-  background: #f5f5f5;
-  font-weight: bold;
+.postlist-table .title {
+  white-space: normal; /* 줄바꿈 허용 */
+  text-align: left; /* 왼쪽 정렬 */
+  min-width: 200px; /* 최소 너비 지정 */
 }
 
-.postlist-table tr:hover {
-  background: #fafafa;
-}
-
-.title {
+.truncate-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* 최대 3줄 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
   text-align: left;
 }
 
-/* 태그 스타일 */
 .tag {
-  padding: 4px 10px;
-  border-radius: 8px;
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
   font-size: 12px;
+  font-weight: bold;
   color: white;
-}
-
-.tag.normal {
-  background: #4caf50;
 }
 
 .tag.danger {
-  background: #e53935;
+  background-color: #e74c3c;
 }
 
-/* 버튼 */
+.tag.normal {
+  background-color: #2ecc71;
+}
+
 .delete-btn {
-  padding: 6px 12px;
-  border: none;
-  background: #e53935;
+  display: inline-block;
+  background-color: #e74c3c;
   color: white;
-  border-radius: 8px;
+  border: none;
+  padding: 4px 8px;
   cursor: pointer;
-  transition: 0.15s;
+  border-radius: 4px;
 }
 
 .delete-btn:hover {
-  background: #c62828;
+  opacity: 0.8;
 }
 
 /* User */

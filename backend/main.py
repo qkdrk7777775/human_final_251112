@@ -11,7 +11,6 @@ app.add_middleware(
     **config["CORS"]
 )
 
-
 app.include_router(community.router, prefix="/posts")
 app.include_router(comment.router, prefix="/comments")
 app.include_router(reaction.router, prefix="/reactions")

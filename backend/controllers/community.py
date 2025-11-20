@@ -1,4 +1,4 @@
-from fastapi import status, Body, Path
+from fastapi import status, Body, Path, Query
 from fastapi.responses import JSONResponse
 
 from services import community
@@ -93,6 +93,7 @@ async def update_post(
             status_code=status.HTTP_400_BAD_REQUEST
         )
 
+# 게시글 삭제
 async def delete_post(post_id: int = Path(...)):
     try:
         # TODO 관리자 혹은 해당 작성자만 삭제 가능하게 수정
@@ -109,7 +110,24 @@ async def delete_post(post_id: int = Path(...)):
             {"message": "게시글 삭제 실패", "error":str(e)},
             status_code=status.HTTP_400_BAD_REQUEST)
         
-        
+
+async def admin_delete_post(post_id: int = Path(...)):
+    try:
+        # TODO 관리자 혹은 해당 작성자만 삭제 가능하게 수정
+        deleted = community.admin_delete_post(post_id)
+        if not deleted:
+            return JSONResponse(
+                {"message": "게시글 없음"}, 
+                status_code=status.HTTP_404_NOT_FOUND)
+        return JSONResponse(
+            {"message": "게시글 삭제 완료"}, 
+            status_code=status.HTTP_200_OK)
+    except Exception as e:
+        return JSONResponse(
+            {"message": "게시글 삭제 실패", "error":str(e)},
+            status_code=status.HTTP_400_BAD_REQUEST)
+
+
 # 게시글 신고
 async def create_reported_post(
     post_id: int = Path(...), 
@@ -135,7 +153,6 @@ async def create_reported_post(
 async def read_reported_posts():
     # TODO 관리자만 조회 가능하게 수정
     try:
-        print(2)
         posts = community.get_reported_posts()
         return JSONResponse(
             {
@@ -148,3 +165,20 @@ async def read_reported_posts():
             {"message": "게시글 조회 실패", "error":str(e)}, 
             status_code=status.HTTP_404_NOT_FOUND
             )
+
+
+# 게시글 복구
+async def delete_reported_post(
+    post_id: int = Path(...),
+    body: dict = Body(...)):
+    user_id=body.get("user_id")
+    print(user_id)
+    try:
+        response = community.delete_reported_post(
+            post_id,
+            user_id # 게시자
+        )
+        return JSONResponse({"message": "게시글 복구 완료", "post_id": response}, status_code=status.HTTP_201_CREATED)
+    except Exception as e:
+        return JSONResponse({"message": "게시글 복구 실패", "error":str(e)}, status_code=status.HTTP_400_BAD_REQUEST)
+

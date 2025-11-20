@@ -1,73 +1,88 @@
 import { useState, useEffect } from "react";
+import {
+  getPostReport,
+  recoverPostReport,
+  deletePostAdmin,
+} from "../../api/Community";
 
 const PostList = () => {
   const [posts, setPosts] = useState([]);
-
-  // 🔥 실제 API 연결 시 여기만 수정하면 됨
+  const fetchPosts = async () => {
+    try {
+      const res = await getPostReport();
+      setPosts(res.data);
+    } catch (err) {
+      alert("신고 데이터 가져오기 실패");
+    }
+  };
   useEffect(() => {
-    // 예시 데이터
-    const samplePosts = [
-      {
-        id: 1,
-        title: "운동 루틴 공유합니다!",
-        author: "User1",
-        created_at: "2024-03-01",
-        views: 121,
-        reported: false,
-      },
-      {
-        id: 2,
-        title: "식단 추천해주세요",
-        author: "User2",
-        created_at: "2024-03-02",
-        views: 87,
-        reported: true,
-      },
-    ];
-    setPosts(samplePosts);
+    fetchPosts();
   }, []);
 
-  const handleDelete = (id) => {
-    if (!window.confirm("정말 삭제하시겠습니까?")) return;
-    setPosts(posts.filter((p) => p.id !== id));
+  const handleRecover = async (post) => {
+    console.log(post);
+
+    try {
+      const post_id = post.post_id;
+      const user_id = post.user_id;
+      await recoverPostReport(post_id, user_id);
+      alert("게시글이 복구되었습니다.");
+      fetchPosts();
+    } catch (err) {
+      alert("게시글 복구 실패");
+    }
+  };
+
+  const handleDelete = async (post) => {
+    if (!window.confirm("정말 게시글을 삭제하시겠습니까?")) return;
+
+    try {
+      const post_id = post.post_id;
+      const user_id = post.user_id;
+      await deletePostAdmin(post_id, user_id);
+      alert("게시글이 삭제되었습니다.");
+      fetchPosts();
+    } catch (err) {
+      alert("게시글 삭제 실패");
+    }
   };
 
   return (
     <div className="postlist-container">
       <h2 className="postlist-title">게시글 관리</h2>
-
       <table className="postlist-table">
         <thead>
           <tr>
             <th>ID</th>
             <th>제목</th>
-            <th>작성자</th>
-            <th>작성일</th>
-            <th>조회수</th>
-            <th>상태</th>
-            <th>관리</th>
+            <th>신고내용</th>
+            <th>내용</th>
+            <th>신고일</th>
+            <th>복구</th>
+            <th>삭제</th>
           </tr>
         </thead>
 
         <tbody>
           {posts.map((post) => (
             <tr key={post.id}>
-              <td>{post.id}</td>
+              <td>{post.email}</td>
               <td className="title">{post.title}</td>
-              <td>{post.author}</td>
-              <td>{post.created_at}</td>
-              <td>{post.views}</td>
+              <td>{post.comments}</td>
+              <td>{post.contents}</td>
+              <td>{post.reported_at}</td>
               <td>
-                {post.reported ? (
-                  <span className="tag danger">신고됨</span>
-                ) : (
-                  <span className="tag normal">정상</span>
-                )}
+                <button
+                  className="recover-btn"
+                  onClick={() => handleRecover(post)}
+                >
+                  복구
+                </button>
               </td>
               <td>
                 <button
                   className="delete-btn"
-                  onClick={() => handleDelete(post.id)}
+                  onClick={() => handleDelete(post)}
                 >
                   삭제
                 </button>

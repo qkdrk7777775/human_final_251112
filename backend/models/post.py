@@ -59,3 +59,4 @@ def delete_post_by_id(post_id: int):
         conn.commit()
         deleted = result.rowcount > 0
     return deleted
+

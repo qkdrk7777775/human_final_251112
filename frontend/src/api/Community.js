@@ -56,6 +56,7 @@ export async function updatePost(postId, { title, contents }) {
     throw err;
   }
 }
+
 export async function deletePost(postId) {
   try {
     const res = await apiWithCookie.delete(`/posts/${postId}`);
@@ -84,7 +85,30 @@ export async function getPostReport() {
     const res = await apiWithCookie.get("/posts/report");
     return res.data;
   } catch (err) {
-    console.error("게시글 목록 불러오기 실패:", err);
+    console.error("신고 게시글 목록 불러오기 실패:", err);
+    throw err;
+  }
+}
+
+export async function recoverPostReport(post_id, user_id) {
+  console.log(user_id);
+  try {
+    const res = await apiWithCookie.post(`/posts/report/delete/${post_id}`, {
+      user_id,
+    });
+    return res.data;
+  } catch (err) {
+    console.error("신고 게시글 복구 실패:", err);
+    throw err;
+  }
+}
+
+export async function deletePostAdmin(postId) {
+  try {
+    const res = await apiWithCookie.delete(`/posts/admin/${postId}`);
+    return res.data;
+  } catch (err) {
+    console.error("게시글 삭제 실패:", err);
     throw err;
   }
 }
