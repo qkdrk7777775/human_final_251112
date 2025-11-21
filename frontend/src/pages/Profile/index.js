@@ -8,6 +8,7 @@ import UserPostList from "./UserPostList";
 import UserDelete from "./UserDelete";
 
 import { getPostsByUserId, deletePost } from "../../api/Community";
+import { getMyQna } from "../../api/Qna";
 
 const Profile = ({ userInfo }) => {
   const navigate = useNavigate();
@@ -82,6 +83,25 @@ const Profile = ({ userInfo }) => {
     }
   };
 
+  // 3) 내가 작성한 QnA
+  const [myQna, setMyQna] = useState([]);
+
+  useEffect(() => {
+    const loadMyQna = async () => {
+      if (!safeUser.id) return;
+
+      try {
+        const res = await getMyQna(safeUser.id);
+        console.log("내 QnA 데이터:", res.data);
+        setMyQna(res.data.data || []);
+      } catch (err) {
+        console.error("내 QnA 불러오기 실패:", err);
+      }
+    };
+
+    loadMyQna();
+  }, [safeUser.id]);
+
   return (
     <div className="profile-page">
       <h2 className="profile-title">마이페이지</h2>
@@ -99,8 +119,40 @@ const Profile = ({ userInfo }) => {
         handleEditPost={handleEditPost}
         handleDeletePost={handleDeletePost}
       />
+      {/* 3. 내가 쓴 QnA */}
+      <section className="profile-section">
+        <h3 className="section-title">내가 작성한 Q&A</h3>
 
-      {/* 3. 회원 탈퇴 */}
+        {myQna.length === 0 ? (
+          <p className="empty-text">아직 작성한 Q&A가 없습니다.</p>
+        ) : (
+          <ul className="post-list">
+            {myQna.map((qna) => (
+              <li key={qna.id} className="post-item">
+                <div className="post-title">{qna.title}</div>
+                <div className="post-meta">작성일: {qna.created_at}</div>
+
+                <div className="post-actions">
+                  <button
+                    className="btn-ghost small"
+                    onClick={() => navigate(`/qna/${qna.id}`)}
+                  >
+                    보기
+                  </button>
+                  <button
+                    className="btn-outline small"
+                    onClick={() => navigate(`/qna/write/${qna.id}`)}
+                  >
+                    수정
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      {/* 4. 회원 탈퇴 */}
       <UserDelete />
     </div>
   );

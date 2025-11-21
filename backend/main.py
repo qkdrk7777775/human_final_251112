@@ -19,7 +19,6 @@ app.include_router(qna.router, prefix="/qna")
 app.include_router(auth.router, prefix="")
 app.include_router(user.router, prefix="")
 app.include_router(test.router, prefix="")
-
 if __name__ == "__main__":
     try:
         uvicorn.run(
