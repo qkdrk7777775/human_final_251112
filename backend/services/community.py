@@ -31,6 +31,13 @@ def delete_post(post_id: int):
     deleted = post.delete_post_by_id(post_id)
     return deleted
 
+# 게시글 삭제 - 관리자 
+def admin_delete_post(post_id: int):
+    is_exists = reported_post.get_reported_posts_by_post_id(post_id)
+    if is_exists:
+        reported_post.delete_post_report_by_post_id(post_id)
+    deleted = post.delete_post_by_id(post_id)
+    return deleted
 
 
 # 게시글 신고
@@ -46,6 +53,10 @@ def create_reported_post(post_id: str, user_id: str, comments: int):
 def get_reported_posts():
     post_data = reported_post.get_reported_posts()
     return post_data
+# 신고 게시글 삭제
+def delete_reported_post(post_id: int, user_id:int):
+    deleted = reported_post.delete_post_report_by_id(post_id, user_id)
+    return deleted
 # 유저별 게시글 조회
 def get_posts_by_user_id(user_id: int):
     posts = post.fetch_posts_by_user_id(user_id)

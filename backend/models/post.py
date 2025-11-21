@@ -59,6 +59,7 @@ def delete_post_by_id(post_id: int):
         conn.commit()
         deleted = result.rowcount > 0
     return deleted
+
 # 유저별 게시글 조회
 def fetch_posts_by_user_id(user_id: int):
     query = text("SELECT * FROM post WHERE user_id = :user_id ORDER BY create_at DESC")
