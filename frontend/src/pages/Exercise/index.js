@@ -1,19 +1,111 @@
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { usePoseDetection3d } from "../../hooks/usePoseDetection3d";
 import WebCamView from "./WebCamView";
+import useSTT from "../../hooks/useSTT";
+
+const speak = (text) => {
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = "ko-KR";
+  const voices = window.speechSynthesis.getVoices();
+  const koreanVoice = voices.find(
+    (v) =>
+      v.name ===
+      "Microsoft HyunsuMultilingual Online (Natural) - Korean (Korea)"
+  );
+
+  if (koreanVoice) {
+    utter.voice = koreanVoice; // 🔥 특정 목소리로 읽기
+  }
+  window.speechSynthesis.speak(utter);
+};
 
 const Exercise = () => {
   const videoRef = useRef(null);
   const { poses, angles } = usePoseDetection3d(videoRef);
-  console.log(poses);
+
+  const { transcript, listening, setListening } = useSTT();
+
+  const [measuring, setMeasuring] = useState(false);
+  const [maxAngles, setMaxAngles] = useState({});
+  console.log(transcript);
+  // 사이트 들어오면 자동 STT on
+  useEffect(() => {
+    setListening(true);
+  }, []);
+
+  // 음성 명령 처리
+  useEffect(() => {
+    if (!transcript) return;
+
+    if (transcript.includes("측정 시작")) startMeasure();
+    if (transcript.includes("측정 종료")) stopMeasure();
+  }, [transcript]);
+
+  const startMeasure = () => {
+    console.log("측정 시작!");
+    setMeasuring(true);
+    setMaxAngles({});
+    speak("측정이 시작되었습니다.");
+  };
+
+  const stopMeasure = () => {
+    console.log("측정 종료!");
+    setMeasuring(false);
+    speak("측정 종료되었습니다.");
+  };
+
+  // measuring = true일 때만 angles 최대값 갱신
+  useEffect(() => {
+    if (!measuring || !angles) return;
+
+    setMaxAngles((prev) => {
+      const updated = { ...prev };
+
+      Object.keys(angles).forEach((key) => {
+        const current = angles[key];
+        const prevMax = prev[key] ?? -Infinity;
+
+        if (current > prevMax) updated[key] = current;
+      });
+
+      return updated;
+    });
+  }, [angles, measuring]);
+
+  // 측정 종료면 관절 데이터도 화면에서 숨기기
+  const displayedPoses = measuring ? poses : null;
+  useEffect(() => {
+    const voicesChanged = () => {
+      const voices = window.speechSynthesis.getVoices();
+      const koreanVoices = voices.filter((v) => v.lang === "ko-KR");
+      console.log("한국어 목소리 목록:", koreanVoices);
+    };
+
+    window.speechSynthesis.onvoiceschanged = voicesChanged;
+
+    // 초기 호출
+    voicesChanged();
+  }, []);
+
   return (
     <div style={{ marginTop: "30px", height: "70vh", display: "flex" }}>
       <WebCamView
         videoRef={videoRef}
-        poses={poses}
+        poses={displayedPoses} // 🔥 measuring=false면 pose 표시 안됨
         width="300px"
         height="300px"
       />
+
+      <div style={{ marginLeft: "20px" }}>
+        <p>인식된 말: {transcript}</p>
+        <p>측정 상태: {measuring ? "측정 중" : "대기"}</p>
+
+        <h3>🔥 현재 기록된 최대 각도</h3>
+        <pre>{JSON.stringify(maxAngles, null, 2)}</pre>
+
+        <button onClick={startMeasure}>측정 시작</button>
+        <button onClick={stopMeasure}>측정 종료</button>
+      </div>
     </div>
   );
 };
