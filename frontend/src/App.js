@@ -32,6 +32,7 @@ import AdminPostList from "./pages/Admin/PostList";
 import Qna from "./pages/Qna";
 import QnaWrite from "./pages/Qna/QnaWrite";
 import QnaDetail from "./pages/Qna/QnaDetail";
+import QnaEdit from "./pages/Qna/QnaEdit";
 
 function App() {
   const [userInfo, setUserInfo] = useState(undefined);
@@ -152,6 +153,8 @@ function App() {
 
           {/* 🔥 QNA ROUTES */}
           <Route path="/qna" element={<Qna />} />
+          <Route path="/qna/edit/:id" element={<QnaEdit />} />
+
           <Route
             path="/qna/write"
             element={

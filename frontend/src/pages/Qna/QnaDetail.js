@@ -34,8 +34,11 @@ export default function QnaDetail() {
     }
   };
 
+  // const handleEdit = () => {
+  //   navigate(`/qna/write?id=${id}`, { state: qna });
+  // };
   const handleEdit = () => {
-    navigate(`/qna/write?id=${id}`, { state: qna });
+    navigate(`/qna/edit/${id}?from=profile`);
   };
 
   if (!qna) return <div>로딩중...</div>;

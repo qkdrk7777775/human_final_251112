@@ -3,11 +3,10 @@ TODO
 
 공개/비공개 선택 버튼
 
- */
+*/
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
-// import { samplePosts } from "../../constants/sample";
 import {
   createPost,
   getPostDetail,
@@ -18,6 +17,9 @@ import {
 const CommunityWrite = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const from = params.get("from"); // profile 또는 null
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -27,6 +29,7 @@ const CommunityWrite = () => {
     is_public: "",
   });
 
+  // 📌 수정 모드일 때 기존 데이터 불러오기
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -51,50 +54,62 @@ const CommunityWrite = () => {
       }
     };
 
-    if (id) {
-      fetchPost();
-    }
+    if (id) fetchPost();
   }, [id, navigate]);
 
+  // 📌 저장(작성/수정)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title || !content || content.trim() === "") {
+    if (!title || !content.trim()) {
       alert("제목과 내용을 모두 입력해주세요.");
       return;
     }
 
     try {
       if (id) {
-        // 게시글 수정
-        await updatePost(id, { title, contents: content || "" });
-        alert(`게시글 수정 완료!\nID: ${id}\n제목: ${title}\n내용: ${content}`);
+        // 🔹 수정
+        await updatePost(id, { title, contents: content });
+        alert("게시글 수정 완료!");
       } else {
-        // 게시글 작성 (유저 ID 1 예시)
+        // 🔹 작성
         await createPost(title, content, 1);
-        alert(`게시글 작성 완료!\n제목: ${title}\n내용: ${content}`);
+        alert("게시글 작성 완료!");
       }
 
-      navigate("/community");
+      // 📌 어디서 왔는지에 따라 이동 경로 결정
+      if (from === "profile") {
+        navigate("/profile");
+      } else {
+        navigate("/community");
+      }
     } catch (error) {
       console.error(error);
       alert("게시글 저장에 실패했습니다.");
     }
   };
+
+  // 📌 삭제하기
   const handleDelete = async () => {
     if (!window.confirm("정말 게시글을 삭제하시겠습니까?")) return;
 
     try {
       await deletePost(id);
       alert("게시글이 삭제되었습니다.");
-      navigate("/community");
+
+      // 삭제 후 이동
+      if (from === "profile") {
+        navigate("/profile");
+      } else {
+        navigate("/community");
+      }
     } catch (error) {
       console.error(error);
       alert("게시글 삭제에 실패했습니다.");
     }
   };
 
-  // 공개 여부를 문자열로 변환
+  // 공개 여부 변환기
   const getPublicStatus = (value) => {
     switch (value) {
       case "1":
@@ -107,6 +122,7 @@ const CommunityWrite = () => {
         return "-";
     }
   };
+
   return (
     <div style={{ maxWidth: "600px", margin: "20px auto" }}>
       <h2>{id ? "게시글 수정" : "게시글 작성"}</h2>
@@ -211,6 +227,7 @@ const CommunityWrite = () => {
         >
           {id ? "수정 완료" : "작성 완료"}
         </button>
+
         {id && (
           <button
             type="button"

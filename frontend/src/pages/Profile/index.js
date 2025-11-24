@@ -66,7 +66,8 @@ const Profile = ({ userInfo }) => {
 
   // 🔹 게시글 수정하기
   const handleEditPost = (postId) => {
-    navigate(`${URL.COMMUNITY_URL}/write/${postId}`);
+    // navigate(`${URL.COMMUNITY_URL}/write/${postId}`);
+    navigate(`/community/write/${postId}?from=profile`);
   };
 
   // 🔹 게시글 삭제하기
@@ -141,7 +142,10 @@ const Profile = ({ userInfo }) => {
                   </button>
                   <button
                     className="btn-outline small"
-                    onClick={() => navigate(`/qna/write/${qna.id}`)}
+                    // onClick={() => navigate(`/qna/write/${qna.id}`)}
+                    onClick={() =>
+                      navigate(`/qna/write/${qna.id}?from=profile`)
+                    }
                   >
                     수정
                   </button>
