@@ -13,7 +13,7 @@ config = {
         "PORT": 3306,
         "DATABASE": "final"
     },
-    "JWT_SECRET": "your_secret_key"
+    "JWT_SECRET": "your_secret_key",
 }
 
 cors_config = {
