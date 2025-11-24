@@ -11,8 +11,8 @@ const Exercise = () => {
       <WebCamView
         videoRef={videoRef}
         poses={poses}
-        width="300px"
-        height="300px"
+        width="640px"
+        height="480px"
       />
     </div>
   );
