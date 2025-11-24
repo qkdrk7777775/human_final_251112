@@ -23,6 +23,8 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import ForgotPassword from "./pages/ForgotPassword";
 
+import ROM from "./pages/ROM";
+
 import Admin from "./pages/Admin";
 import AdminExercise from "./pages/Admin/Exercise";
 import AdminMeal from "./pages/Admin/Meal";
@@ -104,6 +106,9 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route element={<PrivateRoute userInfo={userInfo} />}>
+            <Route path="rom" element={<ROM />} />
+          </Route>
           {/* 관리자 */}
           <Route
             path="/admin"
