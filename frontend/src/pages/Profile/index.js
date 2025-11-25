@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../../css/profile.css";
 
 import URL from "../../constants/url";
 
