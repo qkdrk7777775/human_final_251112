@@ -16,3 +16,10 @@ dependencies:
       - python-dotenv
       - pandas
       - passlib
+      - pillow
+      - torch
+      - torchvision==0.15.2
+      - torchaudio
+      - openpyxl
+      - matplotlib
+      - tqdm

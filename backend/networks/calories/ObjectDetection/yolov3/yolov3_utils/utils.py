@@ -668,7 +668,7 @@ def kmean_anchors(path='./data/coco64.txt', n=9, img_size=(640, 640), thr=0.20, 
     # img_size: (min, max) image size used for multi-scale training (can be same values)
     # thr: IoU threshold hyperparameter used for training (0.0 - 1.0)
     # gen: generations to evolve anchors using genetic algorithm
-    from utils.datasets import LoadImagesAndLabels
+    from yolov3_utils.datasets import LoadImagesAndLabels
 
     def print_results(k):
         k = k[np.argsort(k.prod(1))]  # sort small to large

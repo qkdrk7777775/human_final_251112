@@ -1,14 +1,15 @@
 
 import torch
 import numpy as np
+import pandas as pd
 from PIL import Image
 import torchvision.transforms as T
 
 import sys
 sys.path.append("backend/networks/calories/ObjectDetection/yolov3")
 
-from utils import utils
-from models import Darknet
+import yolov3_utils
+from yolov3_models import Darknet
 
 class MealVolumeModel:
     def __init__(self, weight_path):
@@ -33,7 +34,7 @@ class MealVolumeModel:
         input_tensor = torch.from_numpy(input_tensor)
         logits = self.model(input_tensor)
         probs = logits.softmax(dim=-1)
-        return probs
+        return probs.detach().cpu()
 
 """
 model_path = "./backend/networks/calories/weights/new_opencv_ckpt_b84_e200.pth"
@@ -66,22 +67,20 @@ class MealDetectionModel:
         img = self.transform(pil_img).unsqueeze(0)        
         with torch.no_grad():
             inf_out, _ = self.model(img, augment=False) 
-        output = utils.non_max_suppression(
+        output = yolov3_utils.utils.non_max_suppression(
             inf_out, conf_threshold, iou_threshold ,multi_label=False ,classes=None, agnostic=None)
         resized_h, resized_w = self.img_size
         original_w, original_h = pil_img.size
         x_scale = original_w / resized_w
         y_scale = original_h / resized_h
-        output = [i.detach().cpu().numpy() for i in output]
-        # 입력 이미지 스케일로 복원
-        output_scaled = [
-            None if det is None else np.hstack((
-                det[:, :4] * np.array([x_scale, y_scale, x_scale, y_scale]),
-                det[:, 4:]
-            ))
-            for det in output
-        ]
-        return output_scaled, output
+        det = output[0]
+        if det is None or len(det) == 0:
+            return None, None
+        det = det.detach().cpu().numpy()
+        det_scaled = det.copy()
+        det_scaled[:, [0, 2]] *= x_scale
+        det_scaled[:, [1, 3]] *= y_scale
+        return det_scaled, det
 
 """
 imgsz = (320,192)
@@ -142,8 +141,8 @@ class MealCaloriesModel:
         self, 
         det_config_path, 
         det_weight_path,
-        det_labels,
-        vol_weight_path
+        vol_weight_path,
+        meta_data_path
         ):
         self.det_model = MealDetectionModel(
             config_path=det_config_path,
@@ -152,13 +151,26 @@ class MealCaloriesModel:
         self.vol_model = MealVolumeModel(
             weight_path=vol_weight_path
         )
-        self.labels = det_labels
-        
-    def predict(self, pil_img):
-        det_results, _ = self.det_model.predict(pil_img)
+        self.meta_data = pd.read_excel(meta_data_path)
+        self.qvalues = np.arange(0.25,1.5, 0.25)
+    def predict(self, pil_img, conf_threshold = 0.015, iou_threshold = 0.45):
+        det_results, _ = self.det_model.predict(pil_img, conf_threshold, iou_threshold)
         vol_results = self.vol_model.predict(pil_img)
-        labels = [self.labels[int(i[:,-1])] for i in det_results]
-        return det_results, vol_results, labels
+        # labels = [self.labels[int(i[:,-1])] for i in det_results]
+        return det_results, vol_results
+
+yolo_util_path = "backend/networks/calories"
+config_path = f"{yolo_util_path}/ObjectDetection/yolov3/cfg/yolov3-spp-403cls.cfg"
+weight_path = f"{yolo_util_path}/weights/best_403food_e200b150v2.pt"
+vol_model_path = f"{yolo_util_path}/weights/new_opencv_ckpt_b84_e200.pth"
+names = yolov3_utils.utils.load_classes(f"{yolo_util_path}/ObjectDetection/yolov3/data/403food.names")
+meta_data_path = "./backend/networks/calories/음식분류 AI 데이터 영양DB.xlsx"
+calories_model = MealCaloriesModel(
+    config_path,
+    weight_path,
+    vol_model_path,
+    meta_data_path
+)
 
 """
 yolo_util_path = "backend/networks/calories"
@@ -166,22 +178,27 @@ config_path = f"{yolo_util_path}/ObjectDetection/yolov3/cfg/yolov3-spp-403cls.cf
 weight_path = f"{yolo_util_path}/weights/best_403food_e200b150v2.pt"
 vol_model_path = f"{yolo_util_path}/weights/new_opencv_ckpt_b84_e200.pth"
 names = utils.load_classes(f"{yolo_util_path}/ObjectDetection/yolov3/data/403food.names")
-
+meta_data_path = "./backend/networks/calories/음식분류 AI 데이터 영양DB.xlsx"
 calories_model = MealCaloriesModel(
     config_path,
     weight_path,
-    names,
     vol_model_path,
+    meta_data_path
 )
 
 sample = r"./backend/networks/calories/Regression/sample.JPG"
+sample = r"d:\음식 이미지 및 영양정보 텍스트\Validation\[원천]음식분류_01\01015009\01_015_01015009_160852306765632_1.jpeg"
 pil_img = Image.open(sample)
-outputs = calories_model.predict(pil_img)
+det_res, vol_res = calories_model.predict(pil_img, conf_threshold=0.015)
+if not det_res is None:
+    det_res = det_res[det_res[:,-1]!=0]
 
-import pandas as pd
-df = pd.read_excel("./backend/networks/calories/음식분류 AI 데이터 영양DB.xlsx")
-df.shape
-len(names)
-np.where([i=='01016018' for i in names])[0]
-outputs[-1]
+idx = [int(i) for i in det_res[:,-1]]
+selected_rows = calories_model.meta_data.loc[idx]
+qvalues = np.arange(0.25,1.5, 0.25)
+factor = qvalues[np.argmax(vol_res)]
+
+df_numerics = selected_rows.select_dtypes(include=['number']) 
+selected_rows[df_numerics.columns] = df_numerics * factor
+selected_rows
 """

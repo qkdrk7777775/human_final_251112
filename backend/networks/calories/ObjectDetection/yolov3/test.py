@@ -8,9 +8,9 @@ import seaborn as sns
 
 from torch.utils.data import DataLoader
 
-from models import *
-from utils.datasets import *
-from utils.utils import *
+from backend.networks.calories.ObjectDetection.yolov3.yolov3_models import *
+from yolov3_utils.datasets import *
+from yolov3_utils.utils import *
 
 def test(cfg,
          data,
