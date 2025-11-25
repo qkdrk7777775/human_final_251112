@@ -68,9 +68,20 @@ class MealDetectionModel:
             inf_out, _ = self.model(img, augment=False) 
         output = utils.non_max_suppression(
             inf_out, conf_threshold, iou_threshold ,multi_label=False ,classes=None, agnostic=None)
+        resized_h, resized_w = self.img_size
+        original_w, original_h = pil_img.size
+        x_scale = original_w / resized_w
+        y_scale = original_h / resized_h
         output = [i.detach().cpu().numpy() for i in output]
-        return output
-    
+        # 입력 이미지 스케일로 복원
+        output_scaled = [
+            None if det is None else np.hstack((
+                det[:, :4] * np.array([x_scale, y_scale, x_scale, y_scale]),
+                det[:, 4:]
+            ))
+            for det in output
+        ]
+        return output_scaled, output
 
 """
 imgsz = (320,192)
@@ -82,7 +93,7 @@ names = utils.load_classes(f"{yolo_util_path}/ObjectDetection/yolov3/data/403foo
 meal_detection_model = MealDetectionModel(config_path, weight_path)
 sample = r"./backend/networks/calories/Regression/sample.JPG"
 pil_img = Image.open(sample)
-output = meal_detection_model.predict(pil_img)
+output, _ = meal_detection_model.predict(pil_img)
 pil_img.size
 imgsz
 #  시각화
@@ -144,11 +155,12 @@ class MealCaloriesModel:
         self.labels = det_labels
         
     def predict(self, pil_img):
-        det_results = self.det_model.predict(pil_img)
+        det_results, _ = self.det_model.predict(pil_img)
         vol_results = self.vol_model.predict(pil_img)
         labels = [self.labels[int(i[:,-1])] for i in det_results]
         return det_results, vol_results, labels
-    
+
+"""
 yolo_util_path = "backend/networks/calories"
 config_path = f"{yolo_util_path}/ObjectDetection/yolov3/cfg/yolov3-spp-403cls.cfg"
 weight_path = f"{yolo_util_path}/weights/best_403food_e200b150v2.pt"
@@ -166,4 +178,10 @@ sample = r"./backend/networks/calories/Regression/sample.JPG"
 pil_img = Image.open(sample)
 outputs = calories_model.predict(pil_img)
 
-outputs
+import pandas as pd
+df = pd.read_excel("./backend/networks/calories/음식분류 AI 데이터 영양DB.xlsx")
+df.shape
+len(names)
+np.where([i=='01016018' for i in names])[0]
+outputs[-1]
+"""
