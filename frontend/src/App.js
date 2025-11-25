@@ -82,14 +82,12 @@ function App() {
           </Route>
 
           {/* 프로필 */}
-          <Route
-            path={URL.PROFILE_URL}
-            element={
-              <PrivateRoute userInfo={userInfo}>
-                <Profile userInfo={userInfo} />
-              </PrivateRoute>
-            }
-          />
+          <Route element={<PrivateRoute userInfo={userInfo} />}>
+            <Route
+              path={URL.PROFILE_URL}
+              element={<Profile userInfo={userInfo} />}
+            />
+          </Route>
 
           {/* Auth */}
           <Route
@@ -100,15 +98,11 @@ function App() {
 
           <Route
             path={URL.ROM_URL}
-            element={
-              <PrivateRoute userInfo={userInfo}>
-                <Profile userInfo={userInfo} />
-              </PrivateRoute>
-            }
-          />
-          <Route element={<PrivateRoute userInfo={userInfo} />}>
-            <Route path="rom" element={<ROM />} />
+            element={<PrivateRoute userInfo={userInfo} />}
+          >
+            <Route index element={<ROM />} />
           </Route>
+          {/* <Route element={<PrivateRoute userInfo={userInfo} />}></Route> */}
           {/* 관리자 */}
           <Route
             path="/admin"
