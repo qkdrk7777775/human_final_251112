@@ -1,4 +1,3 @@
-// src/components/Header/index.js
 import { Link, useNavigate } from "react-router-dom";
 import URL from "../../constants/url";
 
@@ -7,7 +6,7 @@ const Header = ({ userInfo, onLogout }) => {
 
   const goHome = () => navigate(URL.HOME);
   const goLogin = () => navigate(URL.LOGIN_URL);
-  const goSignup = () => navigate("/signup");
+  const goSignup = () => navigate(URL.SIGNUP_URL);
   const goProfile = () => navigate(URL.PROFILE_URL);
 
   const handleLogoutClick = () => {
@@ -26,8 +25,9 @@ const Header = ({ userInfo, onLogout }) => {
 
         <nav className="gnb">
           <Link to={URL.EXERCISE_URL}>운동</Link>
-          <Link to={URL.COMMUNITY_URL}>운동커뮤니티</Link>
           <Link to={URL.MEAL_URL}>식단</Link>
+          <Link to={URL.ROM_URL}>ROM</Link>
+          <Link to={URL.COMMUNITY_URL}>커뮤니티</Link>
           <Link to="/qna">Q&A</Link>
         </nav>
       </div>

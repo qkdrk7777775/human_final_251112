@@ -13,6 +13,7 @@ const URL = {
   LOGIN_URL: "/login",
   PROFILE_URL: "/profile",
   QNA_URL: "/qna",
+  SIGNUP_URL: "/signup",
   OTHERS: "*",
   TEST_PATH: "/test",
   ROM_URL: "/rom",
