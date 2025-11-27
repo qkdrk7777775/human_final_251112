@@ -124,6 +124,7 @@ CREATE TABLE IF NOT EXISTS `base_exercises` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(100) NOT NULL COMMENT '운동 이름',
     `type` VARCHAR(50) NOT NULL COMMENT '운동 종류 (예: 상체, 하체, 코어 등)',
+    `link` VARCHAR(255) DEFAULT NULL COMMENT '운동 설명이나 영상 링크',
     PRIMARY KEY (`id`),
     UNIQUE (`name`)
 );
@@ -143,8 +144,9 @@ CREATE TABLE IF NOT EXISTS `curriculum` (
 -- 기본 식단
 CREATE TABLE IF NOT EXISTS `base_meals` (
     `id` INT NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(255) NOT NULL,
+    `name` VARCHAR(255) NOT NULL COMMENT '식사 이름',
     `calories` INT NOT NULL COMMENT '1회 제공량 기준 kcal',
+    `link` VARCHAR(255) DEFAULT NULL COMMENT '레시피나 음식 정보 링크',
     PRIMARY KEY (`id`)
 );
 
