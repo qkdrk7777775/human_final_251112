@@ -9,9 +9,8 @@ const Admin = ({ userInfo }) => {
   useEffect(() => {
     const fetchAttendance = async () => {
       try {
-        const res = await Attendance(userInfo.id);
+        const res = await Attendance(userInfo.user_id);
         const dates = res.data.map((item) => new Date(item.attended_at));
-        console.log(dates);
         setAttendedDates(dates);
         alert("출석처리되었습니다.");
       } catch (error) {
