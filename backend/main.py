@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from config import config
-from routes import auth, community, user, test, comment, reaction, attendance, qna, ai
+from routes import auth, community, user, test, comment, reaction, attendance, qna, ai, file
 
 app = FastAPI()
 
@@ -23,6 +23,7 @@ app.include_router(qna.router, prefix="/qna")
 app.include_router(auth.router, prefix="/auth")
 app.include_router(user.router, prefix="/user")
 app.include_router(ai.router, prefix="/ai")
+app.include_router(file.router, prefix="/file")
 
 if __name__ == "__main__":
     try:
@@ -33,11 +34,6 @@ if __name__ == "__main__":
             reload=True)
     except Exception as e:
         sys.exit(1)
-
-# main.py
-
-# 회원가입 라우터
-app.include_router(user.router, prefix="")
 
 if __name__ == "__main__":
     try:
