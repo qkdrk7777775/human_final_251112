@@ -28,6 +28,19 @@ CREATE TABLE IF NOT EXISTS `user_base_info` (
         ON DELETE CASCADE -- 유저 삭제 시 정보 같이 삭제 
 );
 
+-- 유저 몸변화 이력 관리
+CREATE TABLE IF NOT EXISTS `body_history` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `user_id` INT NOT NULL COMMENT 'user 테이블 PK를 참조',
+    `height` FLOAT NULL,
+    `weight` FLOAT NULL,
+    `bmi` FLOAT NULL,
+    `bmr` FLOAT NULL,
+    `recorded_at` DATETIME DEFAULT CURRENT_TIMESTAMP,COMMENT '수정일시',
+    PRIMARY KEY (`id`),
+    CONSTRAINT `FK_body_history_user` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE
+)
+
 -- 유저 상세 정보
 CREATE TABLE IF NOT EXISTS `user_detail_info` (
     `user_id` INT NOT NULL COMMENT 'user 테이블 PK 참조',
